@@ -2,9 +2,20 @@
 
 import { useState } from "react"
 
+type OrderData = {
+  order_id: string
+  buyer: string
+  game: string
+  tipe_joki?: string
+  progress: string
+  eta?: string
+}
+
+type SearchResult = OrderData | { error: string }
+
 export default function Home() {
   const [order, setOrder] = useState("")
-  const [result, setResult] = useState<any>(null)
+  const [result, setResult] = useState<SearchResult | null>(null)
 
   const handleSearch = async () => {
     if (!order) return
@@ -13,7 +24,7 @@ export default function Home() {
       if (!res.ok) throw new Error("Error fetching data")
       const data = await res.json()
       setResult(data)
-    } catch (err) {
+    } catch {
       setResult({ error: "Order tidak ditemukan" })
     }
   }
@@ -21,9 +32,7 @@ export default function Home() {
   return (
     <div style={{ textAlign: "center", padding: "20px" }}>
       {/* Judul utama */}
-      <h1 style={{ marginBottom: "16px", color: "#00d4ff" }}>
-        NAMA JOKI
-      </h1>
+      <h1 style={{ marginBottom: "16px", color: "#00d4ff" }}>NAMA JOKI</h1>
 
       {/* Search bar */}
       <div style={{ marginBottom: "20px" }}>
@@ -68,7 +77,7 @@ export default function Home() {
       )}
 
       {/* Result table */}
-      {result && !result.error && (
+      {result && "order_id" in result && (
         <div className="result-box" style={{ overflowX: "auto", marginTop: "20px" }}>
           <table
             style={{
@@ -95,13 +104,21 @@ export default function Home() {
             </thead>
             <tbody>
               <tr>
-                <td style={{ border: "1px solid #555", padding: "10px" }}>{result.order_id}</td>
-                <td style={{ border: "1px solid #555", padding: "10px" }}>{result.buyer}</td>
-                <td style={{ border: "1px solid #555", padding: "10px" }}>{result.game}</td>
+                <td style={{ border: "1px solid #555", padding: "10px" }}>
+                  {result.order_id}
+                </td>
+                <td style={{ border: "1px solid #555", padding: "10px" }}>
+                  {result.buyer}
+                </td>
+                <td style={{ border: "1px solid #555", padding: "10px" }}>
+                  {result.game}
+                </td>
                 <td style={{ border: "1px solid #555", padding: "10px" }}>
                   {result.tipe_joki ?? "-"}
                 </td>
-                <td style={{ border: "1px solid #555", padding: "10px" }}>{result.progress}</td>
+                <td style={{ border: "1px solid #555", padding: "10px" }}>
+                  {result.progress}
+                </td>
                 <td style={{ border: "1px solid #555", padding: "10px" }}>
                   {result.eta ?? "-"}
                 </td>
@@ -112,7 +129,7 @@ export default function Home() {
       )}
 
       {/* Error message */}
-      {result?.error && (
+      {result && "error" in result && (
         <div className="result-box" style={{ marginTop: "20px" }}>
           <p>{result.error}</p>
         </div>
