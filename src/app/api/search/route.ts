@@ -1,37 +1,27 @@
 // app/api/search/route.ts
-import { google } from "googleapis";
 import { NextResponse } from "next/server";
 
-export const dynamic = "force-dynamic"; // <<< tambahkan ini
+export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
   try {
-    const auth = new google.auth.GoogleAuth({
-      credentials: {
-        client_email: process.env.GOOGLE_CLIENT,
-        private_key: process.env.GOOGLE_PRIVATE?.replace(/\\n/g, "\n"),
-      },
-      scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
-    });
-
-    const sheets = google.sheets({ version: "v4", auth });
-
     const { searchParams } = new URL(req.url);
     const orderId = searchParams.get("order_id");
 
-    const res = await sheets.spreadsheets.values.get({
-      spreadsheetId: process.env.SHEET_ID,
-      range: "Sheet1!A2:F",
-    });
+    // API Key dari .env
+    const apiKey = process.env.GOOGLE_API_KEY;
+    const sheetId = process.env.SHEET_ID;
 
-    const rows = res.data.values || [];
+    // Fetch sheet data sebagai CSV / JSON
+    const res = await fetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1!A2:F?key=${apiKey}`
+    );
+    const data = await res.json();
+    const rows = data.values || [];
 
     if (orderId) {
-      const order = rows.find((row) => row[0] === orderId);
-
-      if (!order) {
-        return NextResponse.json({ error: "Order not found" }, { status: 404 });
-      }
+      const order = rows.find((row: string[]) => row[0] === orderId);
+      if (!order) return NextResponse.json({ error: "Order not found" }, { status: 404 });
 
       return NextResponse.json({
         order_id: order[0],
@@ -43,7 +33,7 @@ export async function GET(req: Request) {
       });
     }
 
-    const allOrders = rows.map((row) => ({
+    const allOrders = rows.map((row: string[]) => ({
       order_id: row[0],
       buyer: row[1],
       game: row[2],
@@ -53,15 +43,9 @@ export async function GET(req: Request) {
     }));
 
     return NextResponse.json(allOrders);
-
   } catch (err: unknown) {
     console.error("Google Sheets API Error:", err);
-    let message = "Unknown error";
-    if (err instanceof Error) message = err.message;
-
-    return NextResponse.json(
-      { error: "Internal Server Error", details: message },
-      { status: 500 }
-    );
+    let message = err instanceof Error ? err.message : "Unknown error";
+    return NextResponse.json({ error: "Internal Server Error", details: message }, { status: 500 });
   }
 }
