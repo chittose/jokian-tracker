@@ -1,12 +1,15 @@
+// app/api/search/route.ts
 import { google } from "googleapis";
 import { NextResponse } from "next/server";
+
+export const dynamic = "force-dynamic"; // <<< tambahkan ini
 
 export async function GET(req: Request) {
   try {
     const auth = new google.auth.GoogleAuth({
       credentials: {
-        client_email: process.env.GOOGLE_CLIENT_EMAIL,
-        private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+        client_email: process.env.GOOGLE_CLIENT,
+        private_key: process.env.GOOGLE_PRIVATE?.replace(/\\n/g, "\n"),
       },
       scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
     });
