@@ -51,10 +51,13 @@ export async function GET(req: Request) {
 
     return NextResponse.json(allOrders);
 
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Google Sheets API Error:", err);
+    let message = "Unknown error";
+    if (err instanceof Error) message = err.message;
+
     return NextResponse.json(
-      { error: "Internal Server Error", details: err.message },
+      { error: "Internal Server Error", details: message },
       { status: 500 }
     );
   }
