@@ -1,139 +1,147 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-
-type OrderData = {
-  order_id: string
-  buyer: string
-  game: string
-  tipe_joki?: string
-  progress: string
-  eta?: string
-}
-
-type SearchResult = OrderData | { error: string }
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Home() {
-  const [order, setOrder] = useState("")
-  const [result, setResult] = useState<SearchResult | null>(null)
+  const [orderId, setOrderId] = useState("");
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSearch = async () => {
-    if (!order) return
+    if (!orderId) return;
+    setLoading(true);
+    setError("");
+    setData(null);
+
     try {
-      const res = await fetch(`/api/search?order_id=${order}`)
-      if (!res.ok) throw new Error("Error fetching data")
-      const data = await res.json()
-      setResult(data)
-    } catch {
-      setResult({ error: "Order tidak ditemukan" })
+      const res = await fetch(`/api/search/game?order_id=${orderId}`);
+
+      // kalau server balikin status bukan 200
+      if (!res.ok) {
+        throw new Error("⚠️ Orderan Tidak Di Temukan !!!");
+      }
+
+      const result = await res.json();
+
+      if (result.error) {
+        setError(result.error);
+      } else {
+        setData(result);
+      }
+    } catch (err: any) {
+      // biar kalau error lebih rapih
+      setError(err.message || "Terjadi kesalahan tak terduga.");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <div style={{ textAlign: "center", padding: "20px" }}>
-      {/* Judul utama */}
-      <h1 style={{ marginBottom: "16px", color: "#00d4ff" }}>NAMA JOKI</h1>
+    <main className="min-h-screen flex flex-col items-center py-12 px-4">
+      {/* Header */}
+      <header className="mb-12 text-center">
+        <h1 className="text-4xl sm:text-5xl font-extrabold mb-3 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent drop-shadow-lg">
+          🎮 Havena Tracker
+        </h1>
+        <p className="text-gray-700 dark:text-gray-300 text-sm sm:text-base max-w-lg mx-auto">
+          Cek status pesanan joki kamu dengan mudah dan real-time 🚀
+        </p>
+      </header>
 
-      {/* Search bar */}
-      <div style={{ marginBottom: "20px" }}>
+      {/* Search Box */}
+      <div className="flex flex-col sm:flex-row items-center gap-3 mb-10 bg-gray-100 dark:bg-gray-800 p-5 rounded-2xl shadow-xl w-full max-w-xl border border-gray-300 dark:border-gray-700">
         <input
           type="text"
-          placeholder="Enter Order ID"
-          value={order}
-          onChange={(e) => setOrder(e.target.value)}
-          style={{
-            padding: "10px",
-            borderRadius: "8px",
-            border: "1px solid #444",
-            outline: "none",
-            fontSize: "1rem",
-            width: "220px",
-            marginRight: "10px",
-            background: "#2a2a3d",
-            color: "#f5f5f5",
-          }}
+          placeholder="Masukkan Order ID..."
+          value={orderId}
+          onChange={(e) => setOrderId(e.target.value)}
+          className="flex-1 px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-black dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400"
         />
         <button
           onClick={handleSearch}
-          style={{
-            background: "#00d4ff",
-            color: "#000",
-            border: "none",
-            padding: "10px 20px",
-            borderRadius: "8px",
-            fontSize: "1rem",
-            cursor: "pointer",
-          }}
+          disabled={loading}
+          className="px-6 py-3 rounded-xl font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-white"
         >
-          Search
+          {loading ? "🔎 Loading..." : "Cari"}
         </button>
       </div>
 
-      {/* Instruksi - hanya tampil sebelum ada result */}
-      {!result && (
-        <p style={{ marginBottom: "30px", fontSize: "1rem", color: "#ccc" }}>
-          Masukkan Order ID untuk mengetahui progress jokian Anda
-        </p>
+      {/* Error */}
+      {error && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          className="w-full max-w-xl mb-6"
+        >
+          <div className="text-red-700 dark:text-red-300 font-medium bg-red-100 dark:bg-red-900 border border-red-300 dark:border-red-700 px-4 py-3 rounded-lg shadow flex items-center gap-2">
+            ❌ {error}
+          </div>
+        </motion.div>
       )}
 
-      {/* Result table */}
-      {result && "order_id" in result && (
-        <div className="result-box" style={{ overflowX: "auto", marginTop: "20px" }}>
-          <table
-            style={{
-              width: "100%",
-              maxWidth: "800px",
-              margin: "0 auto",
-              borderCollapse: "collapse",
-              textAlign: "center",
-              background: "#1b1b2e",
-              border: "1px solid #555",
-              borderRadius: "8px",
-              overflow: "hidden",
-            }}
+      {/* Tabel Hasil dengan animasi */}
+      <AnimatePresence>
+        {data && (
+          <motion.div
+            key="result"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="overflow-x-auto w-full max-w-5xl"
           >
-            <thead>
-              <tr style={{ background: "#2a2a3d" }}>
-                <th style={{ border: "1px solid #555", padding: "10px" }}>Order ID</th>
-                <th style={{ border: "1px solid #555", padding: "10px" }}>Buyer</th>
-                <th style={{ border: "1px solid #555", padding: "10px" }}>Game</th>
-                <th style={{ border: "1px solid #555", padding: "10px" }}>Tipe Joki</th>
-                <th style={{ border: "1px solid #555", padding: "10px" }}>Progress</th>
-                <th style={{ border: "1px solid #555", padding: "10px" }}>ETA</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style={{ border: "1px solid #555", padding: "10px" }}>
-                  {result.order_id}
-                </td>
-                <td style={{ border: "1px solid #555", padding: "10px" }}>
-                  {result.buyer}
-                </td>
-                <td style={{ border: "1px solid #555", padding: "10px" }}>
-                  {result.game}
-                </td>
-                <td style={{ border: "1px solid #555", padding: "10px" }}>
-                  {result.tipe_joki ?? "-"}
-                </td>
-                <td style={{ border: "1px solid #555", padding: "10px" }}>
-                  {result.progress}
-                </td>
-                <td style={{ border: "1px solid #555", padding: "10px" }}>
-                  {result.eta ?? "-"}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {/* Error message */}
-      {result && "error" in result && (
-        <div className="result-box" style={{ marginTop: "20px" }}>
-          <p>{result.error}</p>
-        </div>
-      )}
-    </div>
-  )
+            <div className="bg-white dark:bg-gray-900 shadow-2xl rounded-2xl overflow-hidden">
+              <table className="w-full text-sm sm:text-base">
+                <thead className="bg-gradient-to-r from-cyan-600 to-blue-700 dark:from-gray-700 dark:to-gray-800 text-white">
+                  <tr>
+                    <th className="px-4 py-3 text-left">ORDER ID</th>
+                    <th className="px-4 py-3 text-left">PENJOKI</th>
+                    <th className="px-4 py-3 text-left">GAME</th>
+                    <th className="px-4 py-3 text-left">TIPE JOKI</th>
+                    <th className="px-4 py-3 text-left">PROGRESS</th>
+                    <th className="px-4 py-3 text-left">ETA</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200">
+                    <td className="px-4 py-3 font-mono text-black dark:text-white">
+                      {data.order_id}
+                    </td>
+                    <td className="px-4 py-3 text-black dark:text-white">
+                      {data.penjoki}
+                    </td>
+                    <td className="px-4 py-3 text-black dark:text-white">
+                      {data.game}
+                    </td>
+                    <td className="px-4 py-3 text-black dark:text-white">
+                      {data.tipe_joki}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs sm:text-sm font-semibold ${
+                          data.progress.toLowerCase().includes("done")
+                            ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+                            : data.progress.toLowerCase().includes("progress")
+                            ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300"
+                            : "bg-cyan-100 text-cyan-700 dark:bg-cyan-900 dark:text-cyan-300"
+                        }`}
+                      >
+                        {data.progress}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-black dark:text-white">
+                      {data.eta}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </main>
+  );
 }
