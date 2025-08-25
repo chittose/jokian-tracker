@@ -6,30 +6,36 @@ import { FaDiscord } from "react-icons/fa";
 
 export default function HomePage() {
   return (
-    <div className="bg-gradient-to-b from-indigo-50 via-white to-indigo-100 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900">
+    <div className="bg-gradient-to-b from-indigo-50 via-white to-indigo-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 min-h-screen transition-colors duration-500 relative overflow-hidden">
+      {/* Decorative Cloud Glow */}
+      <div className="absolute -top-32 -left-32 w-96 h-96 bg-indigo-200/40 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute top-40 -right-40 w-96 h-96 bg-blue-200/40 rounded-full blur-3xl animate-pulse delay-300" />
+
       {/* Hero Section */}
-      <section className="flex flex-col items-center text-center py-20 px-6">
-        <h1 className="text-5xl font-extrabold text-indigo-600 dark:text-indigo-400 mb-4 drop-shadow-md">
+      <section className="flex flex-col items-center text-center py-24 px-6 relative z-10">
+        {/* Background Glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.12),transparent_70%)] pointer-events-none"></div>
+
+        <h1 className="text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-400 mb-6 drop-shadow-lg animate-fade-in">
           Havena Store
         </h1>
-        <p className="text-lg text-gray-700 dark:text-gray-300 max-w-2xl mb-8">
-          Your Gaming Haven 🎮 – Surga bagi para gamer untuk layanan joki yang{" "}
-          <span className="font-semibold text-indigo-600 dark:text-indigo-400">
-            Cepat 🚀, Aman 🔒, dan Murah 💸
-          </span>.
+        <p className="text-lg text-gray-700 dark:text-gray-200 max-w-3xl mb-8 leading-relaxed transition-colors">
+          Selamat datang di Havena Store, tempat aman sekaligus nyaman untuk para gamer sibuk. <br />
+          Kami tahu kerja, kuliah, atau sekolah sering bikin waktu main jadi terbatas. <br />
+          Tenang, biarkan kami yang mengurus akunmu — dari grinding, event, hingga progress harian. <br />
+          Kamu tetap fokus pada dunia nyata, biarkan kami yang menjaga dunia gamemu. 🚀
         </p>
 
         <div className="flex gap-4">
           <Link
             href="/tracker"
-            className="px-6 py-3 rounded-xl font-semibold bg-indigo-500 hover:bg-indigo-600 text-white shadow transition"
+            className="px-6 py-3 rounded-full font-semibold bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 shadow-lg shadow-indigo-500/30 text-white transition transform hover:scale-105"
           >
             Cek Pesanan
           </Link>
-          {/* Scroll ke #games */}
           <a
             href="#games"
-            className="px-6 py-3 rounded-xl font-semibold border border-indigo-500 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900 transition"
+            className="px-6 py-3 rounded-full font-semibold border border-indigo-500 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-gray-800 transition transform hover:scale-105"
           >
             Pilih Game
           </a>
@@ -39,119 +45,86 @@ export default function HomePage() {
       {/* Game Categories */}
       <section
         id="games"
-        className="max-w-5xl mx-auto py-16 px-6 text-center scroll-mt-24"
+        className="max-w-6xl mx-auto py-20 px-6 text-center scroll-mt-24 relative z-10"
       >
-        <h2 className="text-3xl font-bold mb-8">Pilih Game Favoritmu</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Genshin */}
-          <Link
-            href="/genshin"
-            className="group p-6 bg-white dark:bg-gray-800 rounded-2xl shadow hover:shadow-lg transition block"
-          >
-            <Image
-              src="/genshin.webp"
-              alt="Genshin Impact"
-              width={300}
-              height={200}
-              className="rounded-xl mx-auto mb-4"
-            />
-            <h3 className="font-semibold text-lg group-hover:text-indigo-600">
-              Genshin Impact
-            </h3>
-          </Link>
-
-          {/* Wuthering Waves */}
-          <Link
-            href="/wuwa"
-            className="group p-6 bg-white dark:bg-gray-800 rounded-2xl shadow hover:shadow-lg transition block"
-          >
-            <Image
-              src="/wuwa.webp"
-              alt="Wuthering Waves"
-              width={300}
-              height={200}
-              className="rounded-xl mx-auto mb-4"
-            />
-            <h3 className="font-semibold text-lg group-hover:text-indigo-600">
-              Wuthering Waves
-            </h3>
-          </Link>
-
-          {/* Honkai: Star Rail */}
-          <Link
-            href="/hsr"
-            className="group p-6 bg-white dark:bg-gray-800 rounded-2xl shadow hover:shadow-lg transition block"
-          >
-            <Image
-              src="/hsr.webp"
-              alt="Honkai: Star Rail"
-              width={300}
-              height={200}
-              className="rounded-xl mx-auto mb-4"
-            />
-            <h3 className="font-semibold text-lg group-hover:text-indigo-600">
-              Honkai: Star Rail
-            </h3>
-          </Link>
-
-          {/* Zenless Zone Zero */}
-          <Link
-            href="/zzz"
-            className="group p-6 bg-white dark:bg-gray-800 rounded-2xl shadow hover:shadow-lg transition block"
-          >
-            <Image
-              src="/zzz.webp"
-              alt="Zenless Zone Zero"
-              width={300}
-              height={200}
-              className="rounded-xl mx-auto mb-4"
-            />
-            <h3 className="font-semibold text-lg group-hover:text-indigo-600">
-              Zenless Zone Zero
-            </h3>
-          </Link>
+        <h2 className="text-3xl font-bold mb-12 text-indigo-700 dark:text-indigo-300 transition-colors">
+          Pilih Game Favoritmu
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {[
+            { href: "/genshin", img: "/genshin.webp", title: "Genshin Impact" },
+            { href: "/wuwa", img: "/wuwa.webp", title: "Wuthering Waves" },
+            { href: "/hsr", img: "/hsr.webp", title: "Honkai: Star Rail" },
+            { href: "/zzz", img: "/zzz.webp", title: "Zenless Zone Zero" },
+          ].map((game, i) => (
+            <Link
+              key={i}
+              href={game.href}
+              className="group p-6 bg-white dark:bg-gray-800 rounded-2xl shadow hover:shadow-2xl hover:shadow-indigo-500/30 transition transform hover:scale-105"
+            >
+              <Image
+                src={game.img}
+                alt={game.title}
+                width={300}
+                height={200}
+                className="rounded-xl mx-auto mb-4 group-hover:scale-110 transition-transform"
+              />
+              <h3 className="font-semibold text-lg group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                {game.title}
+              </h3>
+            </Link>
+          ))}
         </div>
       </section>
 
       {/* Highlights */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto py-16 px-6">
-        <div className="p-6 rounded-2xl shadow-md bg-white dark:bg-gray-800 text-center">
-          <span className="text-4xl">🚀</span>
-          <h3 className="font-bold text-xl mt-2 mb-2">Cepat & Efisien</h3>
-          <p className="text-gray-600 dark:text-gray-300">
-            Proses joki instan dengan sistem tracking real-time.
-          </p>
-        </div>
-        <div className="p-6 rounded-2xl shadow-md bg-white dark:bg-gray-800 text-center">
-          <span className="text-4xl">🔒</span>
-          <h3 className="font-bold text-xl mt-2 mb-2">Aman & Terpercaya</h3>
-          <p className="text-gray-600 dark:text-gray-300">
-            Privasi dan keamanan akun kamu adalah prioritas utama kami.
-          </p>
-        </div>
-        <div className="p-6 rounded-2xl shadow-md bg-white dark:bg-gray-800 text-center">
-          <span className="text-4xl">💸</span>
-          <h3 className="font-bold text-xl mt-2 mb-2">Murah & Transparan</h3>
-          <p className="text-gray-600 dark:text-gray-300">
-            Harga jelas tanpa biaya tersembunyi, semua bisa joki!
-          </p>
-        </div>
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto py-20 px-6 relative z-10">
+        {[
+          {
+            icon: "🚀",
+            title: "Cepat & Efisien",
+            text: "Proses joki instan dengan sistem tracking real-time.",
+          },
+          {
+            icon: "🔒",
+            title: "Aman & Terpercaya",
+            text: "Privasi dan keamanan akun kamu adalah prioritas utama kami.",
+          },
+          {
+            icon: "💸",
+            title: "Murah & Transparan",
+            text: "Harga jelas tanpa biaya tersembunyi, semua bisa joki!",
+          },
+        ].map((item, i) => (
+          <div
+            key={i}
+            className="p-6 rounded-2xl shadow-md bg-white dark:bg-gray-800 text-center hover:shadow-xl hover:shadow-indigo-500/30 transition transform hover:-translate-y-1"
+          >
+            <span className="text-4xl">{item.icon}</span>
+            <h3 className="font-bold text-xl mt-2 mb-2 dark:text-white transition-colors">
+              {item.title}
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300 transition-colors">
+              {item.text}
+            </p>
+          </div>
+        ))}
       </section>
 
-      {/* CTA Akhir - FULL WIDTH */}
-      <section className="w-full bg-indigo-100 dark:bg-gray-900 py-20">
+      {/* CTA Akhir */}
+      <section className="w-full bg-gradient-to-r from-indigo-100 via-purple-100 to-blue-100 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 py-20 transition-colors relative z-10">
         <div className="max-w-5xl mx-auto text-center px-6">
-          <h2 className="text-2xl font-bold mb-4 text-indigo-700 dark:text-indigo-400">
+          <h2 className="text-2xl font-bold mb-4 text-indigo-700 dark:text-indigo-400 transition-colors">
             Gabung dengan Komunitas Havena Store 💬
           </h2>
-          <p className="text-gray-700 dark:text-gray-300 mb-6">
+          <p className="text-gray-700 dark:text-gray-300 mb-6 transition-colors">
             Dapatkan info terbaru, event seru, dan ngobrol langsung dengan komunitas gamer lainnya.
           </p>
           <a
             href="https://discord.gg/tpGEj4fhkh"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow transition"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg shadow-indigo-500/40 text-white transition transform hover:scale-105"
           >
             <FaDiscord className="text-xl" />
             Join Discord
